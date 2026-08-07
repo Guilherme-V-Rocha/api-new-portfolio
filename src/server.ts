@@ -2,7 +2,7 @@ import { app } from './app.js'
 import { initializeDatabase } from './lib/prisma.js'
 import routes from './routes.js'
 
-const port = process.env.APP_PORT || 3000
+const port = process.env.PORT
 
 initializeDatabase()
   .then(() => {

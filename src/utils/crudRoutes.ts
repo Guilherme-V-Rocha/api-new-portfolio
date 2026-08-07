@@ -1,4 +1,9 @@
-import { type Request, type Response, Router } from 'express'
+import {
+  type Request,
+  type RequestHandler,
+  type Response,
+  Router,
+} from 'express'
 
 export interface ICrudController {
   getAll(req: Request, res: Response): Promise<Response>
@@ -8,26 +13,34 @@ export interface ICrudController {
   delete(req: Request, res: Response): Promise<Response>
 }
 
+interface CrudMiddlewares {
+  auth: RequestHandler[]
+  validate: RequestHandler[]
+  id: RequestHandler[]
+}
+
 export function crudRoutes(
   router: Router,
   controller: ICrudController,
-  middlewares: { create?: any[]; update?: any[] } = {},
+  middlewares: CrudMiddlewares,
 ) {
-  router.get('/', ...(middlewares.update || []), (req, res) =>
-    controller.getAll(req, res),
-  )
-  router.get('/:id', ...(middlewares.update || []), (req, res) =>
+  router.get('/', (req, res) => controller.getAll(req, res))
+  router.get('/:id', ...middlewares.auth, ...middlewares.id, (req, res) =>
     controller.getById(req, res),
   )
 
-  router.post('/', ...(middlewares.create || []), (req, res) =>
+  router.post('/', ...middlewares.auth, ...middlewares.validate, (req, res) =>
     controller.create(req, res),
   )
-  router.put('/:id', ...(middlewares.update || []), (req, res) =>
-    controller.update(req, res),
+  router.put(
+    '/:id',
+    ...middlewares.auth,
+    ...middlewares.id,
+    ...middlewares.validate,
+    (req, res) => controller.update(req, res),
   )
 
-  router.delete('/:id', ...(middlewares.update || []), (req, res) =>
+  router.delete('/:id', ...middlewares.auth, ...middlewares.id, (req, res) =>
     controller.delete(req, res),
   )
 }

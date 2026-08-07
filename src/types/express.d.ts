@@ -1,4 +1,4 @@
-import type { UserPayload } from '../utils/jwt.js' // Ajuste o caminho se necessário
+import type { UserPayload } from '../utils/jwt.js'
 
 declare module 'express-serve-static-core' {
   interface Request {

@@ -55,4 +55,36 @@ export class LoginService {
       return Result.err(new Error('Failed to register'))
     }
   }
+
+  async deleteAccount(id: string | string[]) {
+    try {
+      const ids = Array.isArray(id) ? id : [id]
+      const parsedIds = ids
+        .map((value) => Number(value))
+        .filter((value) => !Number.isNaN(value))
+
+      if (parsedIds.length === 0) {
+        return Result.err(new Error('Invalid user id'))
+      }
+
+      if (parsedIds.length === 1) {
+        const idToDelete = parsedIds[0]
+        await prisma.user.delete({ where: { id: Number(idToDelete) } })
+        return Result.ok({ message: 'Account deleted successfully.' })
+      }
+
+      const deleted = await prisma.user.deleteMany({
+        where: { id: { in: parsedIds } },
+      })
+      if (deleted.count === 0) {
+        return Result.err(new Error('No accounts found for the provided ids'))
+      }
+
+      return Result.ok({
+        message: `${deleted.count} accounts deleted successfully.`,
+      })
+    } catch {
+      return Result.err(new Error('Failed to delete account'))
+    }
+  }
 }

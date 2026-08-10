@@ -17,4 +17,8 @@ loginRoutes.post(
   (req, res) => loginController.register(req, res),
 )
 
+loginRoutes.delete('/:id', (req, res) =>
+  loginController.deleteAccount(req, res),
+)
+
 export default loginRoutes

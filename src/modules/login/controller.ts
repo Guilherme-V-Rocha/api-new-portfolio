@@ -25,4 +25,16 @@ export class LoginController {
     }
     return res.status(400).json({ error: result.error.message })
   }
+
+  async deleteAccount(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params
+    if (!id) {
+      return res.status(400).json({ error: 'User ID is required' })
+    }
+    const result = await this.loginService.deleteAccount(id)
+    if (result.ok) {
+      return res.status(200).json(result.value)
+    }
+    return res.status(400).json({ error: result.error.message })
+  }
 }

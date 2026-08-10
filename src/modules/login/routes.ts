@@ -7,7 +7,7 @@ import { loginSchema, registerSchema } from './validations.js'
 const loginRoutes = Router()
 const loginController = new LoginController(new LoginService())
 
-loginRoutes.post('/login', validateRequest({ body: loginSchema }), (req, res) =>
+loginRoutes.post('/', validateRequest({ body: loginSchema }), (req, res) =>
   loginController.login(req, res),
 )
 

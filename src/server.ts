@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  const port = process.env.PORT || 3000
+  const port = process.env.PORT || 4000
   init().then(() => {
     app.listen(port, () => {
       console.log(`Server running on ${port}`)

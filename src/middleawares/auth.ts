@@ -28,14 +28,16 @@ export function auth(req: Request, res: Response, next: NextFunction) {
   console.log('=== AUTH DEBUG ===')
   console.log('Headers recebidos:', JSON.stringify(req.headers, null, 2))
 
-  const authHeader = req.headers.authorization
+  const rawHeader = req.headers.authorization || req.headers['x-auth-token']
+
+  // Normaliza para string
+  const authHeader = Array.isArray(rawHeader) ? rawHeader[0] : rawHeader
 
   // LOG 2: Ver o valor exato
   console.log('authHeader:', authHeader)
   console.log('typeof authHeader:', typeof authHeader)
 
-  if (!authHeader?.startsWith('Bearer ')) {
-    console.log('REJEITADO: não começa com Bearer')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res
       .status(401)
       .json({ error: 'Token não fornecido ou formato inválido' })

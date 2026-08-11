@@ -28,11 +28,11 @@ export function auth(req: Request, res: Response, next: NextFunction) {
   console.log('=== AUTH DEBUG ===')
   console.log('Headers recebidos:', JSON.stringify(req.headers, null, 2))
 
-  const rawHeader = req.headers['x-auth-token']
+  // const rawHeader = req.headers['x-auth-token']
 
   // Normaliza para string
-  const authHeader = Array.isArray(rawHeader) ? rawHeader[0] : rawHeader
-
+  // const authHeader = Array.isArray(rawHeader) ? rawHeader[0] : rawHeader
+  const authHeader = req.headers.authorization
   // LOG 2: Ver o valor exato
   console.log('authHeader:', authHeader)
   console.log('typeof authHeader:', typeof authHeader)

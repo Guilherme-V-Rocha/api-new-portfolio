@@ -5,23 +5,28 @@ export interface UserPayload {
   email: string
 }
 
-const secret = process.env.JWT_SECRET
-const EXPIRES_IN = process.env.EXPIRES_IN || '1h'
-
-if (!secret) {
-  throw new Error('A variável de ambiente JWT_SECRET não está definida!')
+export interface UserPayload {
+  id: string
+  email: string
 }
 
-const JWT_SECRET: string = secret
+function getSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('A variável de ambiente JWT_SECRET não está definida!')
+  }
+  return secret
+}
 
 export function verifyToken(token: string): UserPayload {
-  return jwt.verify(token, JWT_SECRET) as unknown as UserPayload
+  return jwt.verify(token, getSecret()) as unknown as UserPayload
 }
 
 export function generateToken(payload: UserPayload): string {
+  const expiresIn = process.env.EXPIRES_IN || '1h'
   const options: SignOptions = {}
-  if (EXPIRES_IN) {
-    options.expiresIn = EXPIRES_IN as any
+  if (expiresIn) {
+    options.expiresIn = expiresIn as any
   }
-  return jwt.sign(payload, JWT_SECRET, options)
+  return jwt.sign(payload, getSecret(), options)
 }
